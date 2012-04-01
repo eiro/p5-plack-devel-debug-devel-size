@@ -3,6 +3,7 @@ use Modern::Perl;
 use Plack::Util::Accessor qw(for);
 use parent 'Plack::Middleware::Debug::Base';
 use Devel::Size 'total_size';
+$Devel::Size::warn = 0;
 
 our $VERSION = '0.01';
 
@@ -57,7 +58,7 @@ sub run {
 	my %pairs = map {
 		my $s = snitch $_;
 		$total += $s;
-		warn "## $_ = $s\n";
+#		warn "## $_ = $s\n";
 		$s => $_; # sort value => name
 	} @{ $self->for };
         $panel->content( $self->render_list_pairs( [
