@@ -54,11 +54,12 @@ sub run {
     my ( $self, $env, $panel ) = @_;
     sub {
         my $res = shift;
-        $panel->nav_subtitle("show me");
+        my $total = 0;
         $panel->content
         ( $self->render_list_pairs
-            ( [ map { $_ => snitch $_ } @{ $self->for } ] )
-        )
+            ( [ map { my $s = snitch $_; $total += $s; $_ => $s; } @{ $self->for } ] )
+        );
+        $panel->nav_subtitle($total);
     }
 }
 
