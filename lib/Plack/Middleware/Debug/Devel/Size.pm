@@ -50,15 +50,21 @@ sub prepare_app {
 }
 
 sub run {
-    require YAML;
     my ( $self, $env, $panel ) = @_;
     sub {
         my $res = shift;
         my $total = 0;
-        $panel->content
-        ( $self->render_list_pairs
-            ( [ map { my $s = snitch $_; $total += $s; $_ => $s; } @{ $self->for } ] )
-        );
+	my %pairs = map {
+		my $s = snitch $_;
+		$total += $s;
+		warn "## $_ = $s\n";
+		$s => $_; # sort value => name
+	} @{ $self->for };
+        $panel->content( $self->render_list_pairs( [
+		map { $pairs{$_} => $_ }
+		sort { $b <=> $a }
+		keys %pairs
+	] ) );
         $panel->nav_subtitle($total);
     }
 }
