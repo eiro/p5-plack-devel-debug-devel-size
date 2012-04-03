@@ -33,6 +33,11 @@ or
     plack_middlewares:
         - [Debug, panels, [Dancer::Settings,[Devel::Size, for,['Dancer::Route','Dancer::Session']],Profiler::NYTProf] ]
 
+You can also pass code reference when using L<PlackBuilder>
+
+  [ 'Devel::Size', for => \&watch_for_size ],
+
+This is especially useful whan generating watch list in runtime from %INC which might change.
 
 =cut
 
@@ -60,7 +65,7 @@ sub run {
 		$total += $s;
 #		warn "## $_ = $s\n";
 		$s => $_; # sort value => name
-	} @{ $self->for };
+	} ref $self->for eq 'CODE' ? $self->for->() : @{ $self->for };
         $panel->content( $self->render_list_pairs( [
 		map { $pairs{$_} => $_ }
 		sort { $b <=> $a }
