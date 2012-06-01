@@ -9,7 +9,7 @@ $Devel::Size::warn = 0;
 
 our $VERSION = '0.01';
 
-=head1 configuration
+=head1 configuration (rly? is this doc relevant ?)
 
 the common yaml syntax is 
 
@@ -40,6 +40,11 @@ You can also pass code reference when using L<PlackBuilder>
   [ 'Devel::Size', for => \&watch_for_size ],
 
 This is especially useful whan generating watch list in runtime from %INC which might change.
+
+=head1 Contributors
+
+    Dobrica Pavlinušić
+
 
 =cut
 
