@@ -3,6 +3,7 @@ use Modern::Perl;
 use Plack::Util::Accessor qw(for);
 use parent 'Plack::Middleware::Debug::Base';
 use Devel::Size 'total_size';
+$Devel::Size::warn = 0;
 
 our $VERSION = '0.01';
 
@@ -32,6 +33,11 @@ or
     plack_middlewares:
         - [Debug, panels, [Dancer::Settings,[Devel::Size, for,['Dancer::Route','Dancer::Session']],Profiler::NYTProf] ]
 
+You can also pass code reference when using L<PlackBuilder>
+
+  [ 'Devel::Size', for => \&watch_for_size ],
+
+This is especially useful whan generating watch list in runtime from %INC which might change.
 
 =cut
 
@@ -50,15 +56,22 @@ sub prepare_app {
 }
 
 sub run {
-    require YAML;
     my ( $self, $env, $panel ) = @_;
     sub {
         my $res = shift;
-        $panel->nav_subtitle("show me");
-        $panel->content
-        ( $self->render_list_pairs
-            ( [ map { $_ => snitch $_ } @{ $self->for } ] )
-        )
+        my $total = 0;
+	my %pairs = map {
+		my $s = snitch $_;
+		$total += $s;
+#		warn "## $_ = $s\n";
+		$s => $_; # sort value => name
+	} ref $self->for eq 'CODE' ? $self->for->() : @{ $self->for };
+        $panel->content( $self->render_list_pairs( [
+		map { $pairs{$_} => $_ }
+		sort { $b <=> $a }
+		keys %pairs
+	] ) );
+        $panel->nav_subtitle($total);
     }
 }
 
