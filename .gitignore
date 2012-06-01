@@ -1,6 +1,8 @@
 Build
 Build.bat
 _build
+blib
+perlude-*
 *.bak
 *.json
 *.yml
