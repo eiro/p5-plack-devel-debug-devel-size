@@ -5,6 +5,8 @@ use parent 'Plack::Middleware::Debug::Base';
 use Devel::Size 'total_size';
 $Devel::Size::warn = 0;
 
+# ABSTRACT: Plack debug panel to show sizes of structures
+
 our $VERSION = '0.01';
 
 =head1 configuration
