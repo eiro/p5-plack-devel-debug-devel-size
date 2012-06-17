@@ -74,11 +74,11 @@ sub run {
 		$s => $_; # sort value => name
 	} ref $self->for eq 'CODE' ? $self->for->() : @{ $self->for };
         $panel->content( $self->render_list_pairs( [
-		map { $pairs{$_} => $_ }
+		map { $pairs{$_} => Plack::Middleware::Debug::Memory->format_memory( $_ ) }
 		sort { $b <=> $a }
 		keys %pairs
 	] ) );
-        $panel->nav_subtitle($total);
+        $panel->nav_subtitle( Plack::Middleware::Debug::Memory->format_memory( $total ) );
     }
 }
 
